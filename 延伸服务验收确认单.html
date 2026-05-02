@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>延伸服务验收确认单</title>
+<link rel="preload" href="PingFangFangMaoTiCaoShu-2.ttf" as="font" type="font/ttf" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+@font-face {
+  font-family: 'FangMaoTi';
+  src: url('PingFangFangMaoTiCaoShu-2.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #f5f5f5;
+  padding-bottom: 100px;
+}
+
+/* 顶部导航 */
+.top-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: linear-gradient(135deg, #1a73e8, #0d47a1);
+  color: #fff; padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.top-bar h1 { font-size: 18px; font-weight: 600; }
+.top-bar .subtitle { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+
+/* 主容器 */
+.container {
+  max-width: 800px; margin: 0 auto; padding: 16px;
+}
+
+/* 表单卡片 */
+.card {
+  background: #fff; border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 16px; overflow: hidden;
+}
+.card-header {
+  background: linear-gradient(135deg, #e8f0fe, #d2e3fc);
+  padding: 12px 16px; font-size: 15px; font-weight: 600;
+  color: #1a73e8; border-left: 4px solid #1a73e8;
+}
+.card-body { padding: 16px; }
+
+/* 表单项 */
+.form-row { margin-bottom: 14px; }
+.form-row:last-child { margin-bottom: 0; }
+.form-label { font-size: 14px; color: #555; margin-bottom: 6px; display: block; }
+.form-input, .form-select {
+  width: 100%; padding: 10px 12px; border: 1px solid #ddd;
+  border-radius: 8px; font-size: 15px; outline: none;
+  transition: border 0.3s; background: #fafafa;
+}
+.form-input:focus, .form-select:focus { border-color: #1a73e8; background: #fff; }
+.form-input.half { width: calc(50% - 8px); display: inline-block; }
+.form-input.half:first-child { margin-right: 16px; }
+
+/* 复选框 */
+.checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; }
+.checkbox-label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border: 1px solid #ddd; border-radius: 20px;
+  font-size: 14px; cursor: pointer; transition: all 0.3s;
+  user-select: none; background: #fafafa;
+}
+.checkbox-label.checked {
+  border-color: #1a73e8; background: #e8f0fe; color: #1a73e8;
+}
+.checkbox-label input { display: none; }
+
+/* 服务项目表格 */
+.service-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.service-table th {
+  background: #f0f4ff; padding: 8px 6px; text-align: center;
+  border: 1px solid #d0d7e0; font-weight: 600; color: #333;
+}
+.service-table td {
+  border: 1px solid #d0d7e0; padding: 8px 6px; vertical-align: middle;
+}
+.service-table .item-name { min-width: 100px; }
+.service-table .item-desc { font-size: 12px; color: #666; line-height: 1.5; }
+.service-table input[type="text"],
+.service-table input[type="number"] {
+  width: 60px; padding: 5px 6px; border: 1px solid #ddd;
+  border-radius: 4px; font-size: 13px; text-align: center;
+  background: #fafafa;
+}
+.service-table input:focus { border-color: #1a73e8; background: #fff; outline: none; }
+.service-table .item-checkbox { width: 24px; height: 24px; cursor: pointer; accent-color: #1a73e8; }
+
+.category-title {
+  background: #f8faff; font-weight: 600; padding: 10px 6px;
+  border: 1px solid #d0d7e0; font-size: 14px; color: #1a73e8;
+}
+
+/* 费用合计 */
+.total-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
+.total-row .total-input { width: 160px; }
+.total-row .total-big {
+  width: 200px; font-size: 14px;
+  font-family: 'FangMaoTi', 'Ma Shan Zheng', 'PingFang SC', cursive; letter-spacing: 2px;
+}
+
+/* 满意度 */
+.satisfaction-group { display: flex; gap: 20px; }
+.satisfaction-btn {
+  padding: 8px 24px; border: 2px solid #ddd; border-radius: 20px;
+  background: #fafafa; font-size: 15px; cursor: pointer; transition: all 0.3s;
+}
+.satisfaction-btn.active-sat { border-color: #1a73e8; background: #e8f0fe; color: #1a73e8; font-weight: 600; }
+.satisfaction-btn.satisfied.active-sat { border-color: #34a853; background: #e6f4ea; color: #34a853; }
+.satisfaction-btn.neutral.active-sat { border-color: #fbbc04; background: #fef7e0; color: #fbbc04; }
+.satisfaction-btn.unsatisfied.active-sat { border-color: #ea4335; background: #fce8e6; color: #ea4335; }
+
+/* 底部操作栏 */
+.bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: #fff; padding: 12px 20px; 
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.1);
+  display: flex; gap: 12px;
+}
+.btn {
+  flex: 1; padding: 12px; border: none; border-radius: 10px;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: all 0.3s; text-align: center;
+}
+.btn-primary { background: #1a73e8; color: #fff; }
+.btn-primary:hover { background: #1557b0; }
+.btn-success { background: #34a853; color: #fff; }
+.btn-success:hover { background: #2d9249; }
+.btn-warning { background: #f9ab00; color: #fff; }
+.btn-warning:hover { background: #d99200; }
+.btn-outline { background: #fff; color: #1a73e8; border: 2px solid #1a73e8; }
+
+/* 预览弹窗 */
+.preview-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6); z-index: 200;
+  display: none; justify-content: center; align-items: flex-start;
+  overflow-y: auto; padding: 20px;
+}
+.preview-overlay.show { display: flex; }
+.preview-card {
+  background: #fff; border-radius: 12px; max-width: 680px;
+  width: 100%; padding: 20px; position: relative;
+  margin: 20px auto;
+}
+.preview-card h3 { font-size: 18px; margin-bottom: 16px; text-align: center; }
+.preview-actions { display: flex; gap: 12px; margin-top: 16px; }
+.preview-actions .btn { flex: 1; }
+.close-preview {
+  position: absolute; top: 12px; right: 16px;
+  background: none; border: none; font-size: 24px; cursor: pointer;
+  color: #999;
+}
+.loading { text-align: center; padding: 40px; color: #666; font-size: 14px; }
+
+/* 价格显示 */
+.price-display { font-size: 13px; color: #e53935; font-weight: 600; }
+
+/* 响应式 */
+@media (max-width: 500px) {
+  .top-bar { padding: 12px 16px; }
+  .top-bar h1 { font-size: 16px; }
+  .top-bar .subtitle { display: none; }
+  .container { padding: 10px; }
+  .service-table { font-size: 12px; }
+  .service-table input[type="text"],
+  .service-table input[type="number"] { width: 50px; font-size: 12px; }
+}
+
+/* 签名输入 */
+.sig-input {
+  width: 140px; padding: 8px 12px; border: none;
+  border-bottom: 2px solid #333; font-size: 18px;
+  background: transparent; outline: none;
+  font-family: 'FangMaoTi', 'Ma Shan Zheng', cursive; letter-spacing: 2px;
+}
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<div class="top-bar">
+  <div>
+    <h1>延伸服务验收确认单</h1>
+    <div class="subtitle">湖北移动爱家工程师 · 电子填写系统</div>
+  </div>
+</div>
+
+<div class="container" id="app">
+
+  <!-- 一、基础信息 -->
+  <div class="card">
+    <div class="card-header">一、基础信息</div>
+    <div class="card-body">
+      <div class="form-row">
+        <label class="form-label">客户姓名</label>
+        <input class="form-input half" id="customerName" placeholder="请输入客户姓名">
+        <label class="form-label" style="display:inline-block;width:auto;margin:0 0 0 16px;">联系电话</label>
+        <input class="form-input half" id="customerPhone" placeholder="请输入联系电话" style="width:calc(50% - 8px);">
+      </div>
+      <div class="form-row">
+        <label class="form-label">服务地址</label>
+        <input class="form-input" id="serviceAddress" placeholder="请输入详细服务地址">
+      </div>
+      <div class="form-row">
+        <label class="form-label">服务日期</label>
+        <input class="form-input half" id="serviceDate" type="date">
+      </div>
+      <div class="form-row">
+        <label class="form-label">服务类型</label>
+        <div class="checkbox-group" id="serviceTypeGroup">
+          <label class="checkbox-label"><input type="checkbox" value="专属上门"><span>专属上门</span></label>
+          <label class="checkbox-label"><input type="checkbox" value="综合布线"><span>综合布线</span></label>
+          <label class="checkbox-label"><input type="checkbox" value="设备调测"><span>设备调测</span></label>
+          <label class="checkbox-label"><input type="checkbox" value="其他"><span>其他</span></label>
+        </div>
+        <div id="otherServiceDiv" style="display:none;margin-top:8px;">
+          <input class="form-input" id="otherService" placeholder="请填写其他服务类型">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 二、服务内容及验收标准 -->
+  <div class="card">
+    <div class="card-header">二、服务内容及验收标准 <span style="font-size:12px;font-weight:400;color:#666;">（根据实际服务勾选对应项目）</span></div>
+    <div class="card-body" style="overflow-x:auto;">
+      <table class="service-table">
+        <thead>
+          <tr><th style="width:40px;">选</th><th>项目</th><th>验收标准</th><th style="width:65px;">数量</th><th style="width:70px;">费用</th></tr>
+        </thead>
+        <tbody>
+          <!-- A. 综合布线 -->
+          <tr><td colspan="5" class="category-title">A. 综合布线</td></tr>
+          <tr>
+            <td><input type="checkbox" class="item-checkbox" data-key="cable1"></td>
+            <td class="item-name">网线/电话线 <span style="color:#e53935;font-size:12px;">（5元/米）</span></td>
+            <td class="item-desc">线路安全无挤压；路径规划合理，线卡固定间距均匀无松动；线序正确，通断测试通过率100%</td>
+            <td><input type="number" class="form-input-qty" data-key="cable1" data-price="5" placeholder="米" min="0" style="width:55px;"></td>
+            <td><span class="price-display" id="price-cable1">￥0</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" class="item-checkbox" data-key="cable2"></td>
+            <td class="item-name">光纤 <span style="color:#e53935;font-size:12px;">（6元/米）</span></td>
+            <td class="item-desc">光纤无过度弯曲（半径≥30mm），固定均匀无松动；光衰≤0.5dB，通断测试通过率100%</td>
+            <td><input type="number" class="form-input-qty" data-key="cable2" data-price="6" placeholder="米" min="0" style="width:55px;"></td>
+            <td><span class="price-display" id="price-cable2">￥0</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" class="item-checkbox" data-key="hole1"></td>
+            <td class="item-name">非承重墙打孔 <span style="color:#e53935;font-size:12px;">（50元/孔）</span></td>
+            <td class="item-desc">孔位精准，墙面无崩裂，施工后清理现场</td>
+            <td><input type="number" class="form-input-qty" data-key="hole1" data-price="50" placeholder="孔" min="0" style="width:55px;"></td>
+            <td><span class="price-display" id="price-hole1">￥0</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" class="item-checkbox" data-key="hole2"></td>
+            <td class="item-name">承重墙打孔 <span style="color:#e53935;font-size:12px;">（60元/孔）</span></td>
+            <td class="item-desc">孔位精准，墙面无崩裂，施工后清理现场</td>
+            <td><input type="number" class="form-input-qty" data-key="hole2" data-price="60" placeholder="孔" min="0" style="width:55px;"></td>
+            <td><span class="price-display" id="price-hole2">￥0</span></td>
+          </tr>
+
+          <!-- B. 设备调测 -->
+          <tr><td colspan="5" class="category-title">B. 设备调测</td></tr>
+          <tr>
+            <td><input type="checkbox" class="item-checkbox" data-key="device1"></td>
+            <td class="item-name">机顶盒安装调测 <span style="color:#e53935;font-size:12px;">（50元/台）</span></td>
+            <td class="item-desc">网络及视频传输线路连接稳定，音频画面正常</td>
+            <td><input type="number" class="form-input-qty" data-key="device1" data-price="50" placeholder="台" min="0" style="width:55px;"></td>
+            <td><span class="price-display" id="price-device1">￥0</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" class="item-checkbox" data-key="device2"></td>
+            <td class="item-name">路由器安装调测 <span style="color:#e53935;font-size:12px;">（50元/台）</span></td>
+            <td class="item-desc">设备接入联网正常</td>
+            <td><input type="number" class="form-input-qty" data-key="device2" data-price="50" placeholder="台" min="0" style="width:55px;"></td>
+            <td><span class="price-display" id="price-device2">￥0</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" class="item-checkbox" data-key="device3"></td>
+            <td class="item-name">非墙挂摄像头调测 <span style="color:#e53935;font-size:12px;">（50元/台）</span></td>
+            <td class="item-desc">角度合理画面清晰，远程访问正常</td>
+            <td><input type="number" class="form-input-qty" data-key="device3" data-price="50" placeholder="台" min="0" style="width:55px;"></td>
+            <td><span class="price-display" id="price-device3">￥0</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" class="item-checkbox" data-key="device4"></td>
+            <td class="item-name">墙挂摄像头调测 <span style="color:#e53935;font-size:12px;">（100元/台）</span></td>
+            <td class="item-desc">角度合理画面清晰，远程访问正常</td>
+            <td><input type="number" class="form-input-qty" data-key="device4" data-price="100" placeholder="台" min="0" style="width:55px;"></td>
+            <td><span class="price-display" id="price-device4">￥0</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" class="item-checkbox" data-key="device5"></td>
+            <td class="item-name">其他设备</td>
+            <td><input class="form-input" id="otherDeviceDesc" placeholder="请填写设备名称" style="font-size:12px;padding:4px 6px;"></td>
+            <td><input type="number" class="form-input-qty" data-key="device5" data-price="0" placeholder="台" min="0" style="width:55px;"></td>
+            <td>
+              <span class="price-display" id="price-device5">￥0</span><br>
+              <input class="form-input" id="otherDevicePrice" placeholder="单价" style="width:55px;font-size:11px;padding:2px 4px;margin-top:2px;">
+            </td>
+          </tr>
+
+          <!-- C. 专属上门 -->
+          <tr><td colspan="5" class="category-title">C. 专属上门</td></tr>
+          <tr>
+            <td><input type="checkbox" class="item-checkbox" data-key="visit1"></td>
+            <td class="item-name">上门服务费 <span style="color:#e53935;font-size:12px;">（50元/次）</span></td>
+            <td class="item-desc">按用户约定时间及时上门</td>
+            <td><input type="number" class="form-input-qty" data-key="visit1" data-price="50" placeholder="次" min="0" style="width:55px;"></td>
+            <td><span class="price-display" id="price-visit1">￥0</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 三、费用合计 -->
+  <div class="card">
+    <div class="card-header">三、费用合计</div>
+    <div class="card-body">
+      <div class="form-row">
+        <label class="form-label">总费用</label>
+        <div class="total-row">
+          <span style="font-size:16px;font-weight:600;">￥</span>
+          <input class="form-input total-input" id="totalAmount" readonly style="width:120px;font-size:18px;font-weight:600;color:#e53935;">
+          <span style="font-size:14px;color:#666;">（大写：</span>
+          <input class="form-input total-big" id="totalBig" readonly placeholder="零元整">
+          <span style="font-size:14px;color:#666;">）</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 四、客户确认 -->
+  <div class="card">
+    <div class="card-header">四、客户确认</div>
+    <div class="card-body">
+      <div class="form-row">
+        <label class="form-label">服务结果验收</label>
+        <div class="satisfaction-group" id="satisfactionGroup">
+          <button class="satisfaction-btn satisfied" data-value="满意" onclick="selectSatisfaction(this)">满意</button>
+          <button class="satisfaction-btn neutral" data-value="一般" onclick="selectSatisfaction(this)">一般</button>
+          <button class="satisfaction-btn unsatisfied" data-value="不满意" onclick="selectSatisfaction(this)">不满意</button>
+        </div>
+        <div id="unsatisfiedReasonDiv" style="display:none;margin-top:8px;">
+          <input class="form-input" id="unsatisfiedReason" placeholder="请填写不满意原因">
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">客户签字</label>
+        <input class="sig-input" id="customerSign" placeholder="请输入客户签名">
+        <label class="form-label" style="display:inline-block;width:auto;margin:0 0 0 16px;">日期</label>
+        <input class="form-input" id="customerSignDate" type="date" style="width:160px;display:inline-block;">
+      </div>
+    </div>
+  </div>
+
+  <!-- 五、工程师签字 -->
+  <div class="card">
+    <div class="card-header">五、工程师签字</div>
+    <div class="card-body">
+      <div class="form-row">
+        <label class="form-label">工程师工号</label>
+        <input class="form-input half" id="engineerId" placeholder="请输入工号">
+        <label class="form-label" style="display:inline-block;width:auto;margin:0 0 0 16px;">联系电话</label>
+        <input class="form-input half" id="engineerPhone" placeholder="请输入联系电话" style="width:calc(50% - 8px);">
+      </div>
+      <div class="form-row">
+        <label class="form-label">工程师签字</label>
+        <input class="sig-input" id="engineerSign" placeholder="请输入工程师签名">
+        <label class="form-label" style="display:inline-block;width:auto;margin:0 0 0 16px;">日期</label>
+        <input class="form-input" id="engineerSignDate" type="date" style="width:160px;display:inline-block;">
+      </div>
+      <div class="form-row" style="margin-top:12px;text-align:center;color:#999;font-size:13px;">
+        投诉电话：10086（如服务未达标可致电反馈）
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 底部操作栏 -->
+<div class="bottom-bar">
+  <button class="btn btn-primary" onclick="previewHandwriting()">✍ 手写体预览</button>
+  <button class="btn btn-success" onclick="exportImage()">📷 输出纸质图片</button>
+  <button class="btn btn-outline" onclick="resetForm()">🔄 重置</button>
+</div>
+
+<!-- 预览弹窗 -->
+<div class="preview-overlay" id="previewOverlay">
+  <div class="preview-card">
+    <button class="close-preview" onclick="closePreview()">×</button>
+    <h3>手写体预览</h3>
+    <div id="previewContent"></div>
+      <div class="loading">生成中...</div>
+    </div>
+    <div class="preview-actions">
+      <button class="btn btn-success" onclick="exportImage()">📷 保存为图片</button>
+      <button class="btn btn-outline" onclick="closePreview()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== 数字转大写 ====================
+function numToChinese(n) {
+  const digits = ['零','壹','贰','叁','肆','伍','陆','柒','捌','玖'];
+  const units = ['','拾','佰','仟','万','亿'];
+  if (n === 0) return '零元整';
+  let str = '';
+  let yi = Math.floor(n / 100000000);
+  let wan = Math.floor((n % 100000000) / 10000);
+  let ge = n % 10000;
+  function readSection(num, hasUnit) {
+    if (num === 0) return hasUnit ? '零' : '';
+    let s = '', prevZero = true;
+    for (let i = 3; i >= 0; i--) {
+      let d = Math.floor(num / Math.pow(10, i)) % 10;
+      if (d === 0) {
+        if (!prevZero && i > 0) s += '零';
+        prevZero = true;
+      } else {
+        s += digits[d] + units[i];
+        prevZero = false;
+      }
+    }
+    return s;
+  }
+  if (yi > 0) { str += readSection(yi, false) + '亿'; }
+  if (wan > 0) { str += readSection(wan, yi > 0) + '万'; }
+  if (ge > 0) {
+    if ((yi > 0 || wan > 0) && Math.floor(ge / 1000) === 0) str += '零';
+    str += readSection(ge, false);
+  }
+  return str + '元整';
+}
+
+// ==================== 价格计算 ====================
+function calcPrices() {
+  let total = 0;
+  document.querySelectorAll('.item-checkbox').forEach(cb => {
+    const key = cb.dataset.key;
+    const qtyInput = document.querySelector(`.form-input-qty[data-key="${key}"]`);
+    const priceSpan = document.getElementById(`price-${key}`);
+    if (!qtyInput || !priceSpan) return;
+    
+    const qty = parseFloat(qtyInput.value) || 0;
+    let price = parseFloat(qtyInput.dataset.price) || 0;
+    
+    if (key === 'device5') {
+      price = parseFloat(document.getElementById('otherDevicePrice').value) || 0;
+    }
+    
+    const itemTotal = cb.checked && qty > 0 ? qty * price : 0;
+    priceSpan.textContent = itemTotal > 0 ? `￥${itemTotal}` : '￥0';
+    total += itemTotal;
+  });
+  
+  document.getElementById('totalAmount').value = total;
+  document.getElementById('totalBig').value = total > 0 ? numToChinese(Math.round(total)) : '零元整';
+}
+
+// ==================== 事件绑定 ====================
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.item-checkbox').forEach(cb => {
+    cb.addEventListener('change', calcPrices);
+  });
+  
+  document.querySelectorAll('.form-input-qty').forEach(inp => {
+    inp.addEventListener('input', calcPrices);
+  });
+  
+  document.getElementById('otherDevicePrice').addEventListener('input', calcPrices);
+  
+  document.querySelectorAll('.checkbox-label input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', function() {
+      this.parentElement.classList.toggle('checked', this.checked);
+      if (this.value === '其他') {
+        document.getElementById('otherServiceDiv').style.display = this.checked ? 'block' : 'none';
+      }
+    });
+  });
+  
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('serviceDate').value = today;
+  document.getElementById('customerSignDate').value = today;
+  document.getElementById('engineerSignDate').value = today;
+  
+  // 默认选定"综合布线"
+  const zongheCheckbox = document.querySelector('.checkbox-label input[value="综合布线"]');
+  if (zongheCheckbox) {
+    zongheCheckbox.checked = true;
+    zongheCheckbox.parentElement.classList.add('checked');
+  }
+  
+  // 默认选定"满意"
+  const satisfiedBtn = document.querySelector('.satisfaction-btn[data-value="满意"]');
+  if (satisfiedBtn) {
+    satisfiedBtn.classList.add('active-sat');
+  }
+  
+  calcPrices();
+});
+
+// ==================== 满意度选择 ====================
+function selectSatisfaction(btn) {
+  document.querySelectorAll('.satisfaction-btn').forEach(b => b.classList.remove('active-sat'));
+  btn.classList.add('active-sat');
+  document.getElementById('unsatisfiedReasonDiv').style.display = 
+    btn.dataset.value === '不满意' ? 'block' : 'none';
+}
+
+// ==================== Toast提示 ====================
+function showToast(msg) {
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.75); color: #fff; padding: 12px 24px;
+    border-radius: 24px; font-size: 14px; z-index: 999;
+    animation: fadeInOut 2s forwards;
+  `;
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2000);
+}
+
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  }
+`;
+document.head.appendChild(style);
+
+// ==================== 手写体生成 ====================
+function handwrite(text) {
+  return `<span style="font-family:'FangMaoTi','Ma Shan Zheng',cursive;font-size:18px;letter-spacing:2px;color:#222;">${text}</span>`;
+}
+
+function hw(text) {
+  if (!text) return `<span style="border-bottom:1.5px solid #888;display:inline-block;min-width:40px;height:1em;">&nbsp;</span>`;
+  return handwrite(text);
+}
+
+function underline(w) {
+  return `<span style="border-bottom:1.5px solid #888;display:inline-block;min-width:${w}px;height:1em;">&nbsp;</span>`;
+}
+
+function checkbox(checked) {
+  return checked ? '☑' : '□';
+}
+
+// ==================== 手写体预览 ====================
+function previewHandwriting() {
+  const overlay = document.getElementById('previewOverlay');
+  const content = document.getElementById('previewContent');
+  content.innerHTML = buildPaperContent();
+  overlay.classList.add('show');
+}
+
+// ==================== 导出图片 ====================
+async function exportImage() {
+  showToast('📷 正在生成图片...');
+  
+  const overlay = document.getElementById('previewOverlay');
+  const content = document.getElementById('previewContent');
+  if (!overlay.classList.contains('show')) {
+    content.innerHTML = buildPaperContent();
+    overlay.classList.add('show');
+  }
+  
+  // 等待字体加载完成
+  await document.fonts.ready;
+  // 额外等待DOM渲染
+  await new Promise(r => setTimeout(r, 800));
+  
+  try {
+    const element = content.firstElementChild;
+    const canvas = await html2canvas(element, {
+      scale: 3,
+      useCORS: true,
+      backgroundColor: '#fff',
+      logging: false,
+      width: element.scrollWidth,
+      height: element.scrollHeight,
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight,
+      onclone: function(doc) {
+        // 确保字体在克隆文档中也生效
+        const style = doc.createElement('style');
+        style.textContent = `
+          @font-face {
+            font-family: 'FangMaoTi';
+            src: url('PingFangFangMaoTiCaoShu-2.ttf') format('truetype');
+          }
+        `;
+        doc.head.appendChild(style);
+      }
+    });
+    
+    const link = document.createElement('a');
+    link.download = `延伸服务验收确认单_${new Date().toISOString().split('T')[0]}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    
+    showToast('✅ 图片已保存');
+  } catch (err) {
+    console.error(err);
+    showToast('❌ 生成失败，请重试');
+  }
+}
+
+// ==================== 预览弹窗 ====================
+function closePreview() {
+  document.getElementById('previewOverlay').classList.remove('show');
+}
+
+// ==================== 构建纸质单据内容 ====================
+function buildPaperContent() {
+  const getVal = id => document.getElementById(id)?.value || '';
+  const handwrite = text => `<span style="font-family:'FangMaoTi','Ma Shan Zheng',cursive;font-size:18px;letter-spacing:2px;color:#222;">${text}</span>`;
+  const underline = len => `<span style="border-bottom:1.5px solid #888;display:inline-block;min-width:${len}px;text-align:center;">&nbsp;</span>`;
+  const checkbox = checked => checked ? '<span style="font-size:18px;">☑</span>' : '<span style="font-size:18px;">□</span>';
+  
+  const typeChecks = ['专属上门', '综合布线', '设备调测', '其他'].map(t => {
+    const cb = document.querySelector(`.checkbox-label input[value="${t}"]`);
+    return { type: t, checked: cb?.checked };
+  });
+  
+  const satisfaction = document.querySelector('.satisfaction-btn.active-sat')?.dataset?.value || '';
+  const unsatisfiedReason = satisfaction === '不满意' ? getVal('unsatisfiedReason') : '';
+  
+  // 服务项目数据
+  const items = [
+    { cat: 'A', title: '综合布线' },
+    { key: 'cable1', name: '网线/电话线（5元/米）', price: 5, unit: '米', 
+      desc: '线路安全无挤压无安全隐患；路径规划合理，采用线卡固定时，间距均匀，无松动脱落现象；线序正确通断测试通过率100%，网线测试仪现场测试通过' },
+    { key: 'cable2', name: '光纤（6元/米）', price: 6, unit: '米',
+      desc: '光纤无过度弯曲（弯曲半径≥30mm）、挤压，无安全隐患；路径规划合理，固定间距均匀无松动脱落现象，粘贴牢固（隐形光纤）；光衰≤0.5dB，通断测试通过率100%；' },
+    { key: 'hole1', name: '非承重墙打孔（50元/孔）', price: 50, unit: '孔', desc: '孔位精准，墙面无崩裂，施工后清理现场' },
+    { key: 'hole2', name: '承重墙打孔（60元/孔）', price: 60, unit: '孔', desc: '孔位精准，墙面无崩裂，施工后清理现场' },
+    { cat: 'B', title: '设备调测' },
+    { key: 'device1', name: '机顶盒安装调测（50元/台）', price: 50, unit: '台', desc: '网络及视频传输线路连接稳定，音频画面正常' },
+    { key: 'device2', name: '路由器安装调测（50元/台）', price: 50, unit: '台', desc: '设备接入联网正常' },
+    { key: 'device3', name: '非墙挂摄像头调测（50元/台）', price: 50, unit: '台', desc: '角度合理画面清晰，远程访问正常' },
+    { key: 'device4', name: '墙挂摄像头调测（100元/台）', price: 100, unit: '台', desc: '角度合理画面清晰，远程访问正常' },
+    { key: 'device5', name: '其他设备', isOther: true, unit: '台', desc: '' },
+    { cat: 'C', title: '专属上门' },
+    { key: 'visit1', name: '上门服务费（50元/次）', price: 50, unit: '次', desc: '按用户约定时间及时上门' },
+  ];
+  
+  // 构建服务项目表格
+  let serviceRows = '';
+  items.forEach(item => {
+    if (item.cat) {
+      serviceRows += `
+        <tr>
+          <td colspan="5" style="padding:6px 8px;background:#f8f8f8;font-weight:normal;font-size:14px;border:1px solid #ccc;">
+            ${item.cat}. ${item.title}
+          </td>
+        </tr>
+        <tr style="background:#f0f0f0;font-size:12px;">
+          <th style="width:36px;padding:4px;border:1px solid #ccc;font-weight:normal;">选</th>
+          <th style="padding:4px 8px;border:1px solid #ccc;font-weight:normal;">项目</th>
+          <th style="padding:4px 8px;border:1px solid #ccc;font-weight:normal;">验收标准</th>
+          <th style="width:65px;padding:4px;border:1px solid #ccc;font-weight:normal;">数量/米数</th>
+          <th style="width:75px;padding:4px;border:1px solid #ccc;font-weight:normal;">费用</th>
+        </tr>`;
+      return;
+    }
+    
+    const cb = document.querySelector(`.item-checkbox[data-key="${item.key}"]`);
+    const qtyInput = document.querySelector(`.form-input-qty[data-key="${item.key}"]`);
+    const isChecked = cb?.checked;
+    const qty = qtyInput?.value || '';
+    let priceDisplay = '';
+    
+    if (item.isOther) {
+      const desc = document.getElementById('otherDeviceDesc')?.value || '';
+      const price = document.getElementById('otherDevicePrice')?.value || '';
+      if (isChecked && qty) {
+        priceDisplay = handwrite('￥' + (parseFloat(price) * parseFloat(qty) || 0));
+      }
+      serviceRows += `
+        <tr>
+          <td style="text-align:center;padding:6px 4px;border:1px solid #ccc;font-size:14px;">${checkbox(isChecked)}</td>
+          <td style="padding:6px 8px;border:1px solid #ccc;font-size:13px;">${item.name} ${desc ? handwrite(desc) : ''}</td>
+          <td style="padding:6px 8px;border:1px solid #ccc;font-size:12px;color:#666;">${item.desc}</td>
+          <td style="text-align:center;padding:6px 4px;border:1px solid #ccc;font-size:13px;">${isChecked ? handwrite(qty) : underline(30)} ${item.unit}</td>
+          <td style="text-align:right;padding:6px 8px;border:1px solid #ccc;font-size:13px;">${isChecked && qty ? priceDisplay : underline(45)}</td>
+        </tr>`;
+    } else {
+      const itemTotal = isChecked && qty ? (parseFloat(qty) * item.price) : 0;
+      priceDisplay = itemTotal > 0 ? handwrite('￥' + itemTotal) : underline(45);
+      serviceRows += `
+        <tr>
+          <td style="text-align:center;padding:6px 4px;border:1px solid #ccc;font-size:14px;">${checkbox(isChecked)}</td>
+          <td style="padding:6px 8px;border:1px solid #ccc;font-size:13px;">${item.name}</td>
+          <td style="padding:6px 8px;border:1px solid #ccc;font-size:12px;color:#666;">${item.desc}</td>
+          <td style="text-align:center;padding:6px 4px;border:1px solid #ccc;font-size:13px;">${isChecked && qty ? handwrite(qty) : underline(30)} ${item.unit}</td>
+          <td style="text-align:right;padding:6px 8px;border:1px solid #ccc;font-size:13px;">${priceDisplay}</td>
+        </tr>`;
+    }
+  });
+  
+  const total = document.getElementById('totalAmount')?.value || '';
+  const totalBig = document.getElementById('totalBig')?.value || '';
+  
+  const serviceDate = getVal('serviceDate');
+  const [year, month, day] = serviceDate ? serviceDate.split('-') : ['', '', ''];
+  const csDate = getVal('customerSignDate');
+  const [csYear, csMonth, csDay] = csDate ? csDate.split('-') : ['', '', ''];
+  const egDate = getVal('engineerSignDate');
+  const [egYear, egMonth, egDay] = egDate ? egDate.split('-') : ['', '', ''];
+  
+  const otherServiceText = typeChecks.find(t => t.type === '其他')?.checked 
+    ? handwrite(getVal('otherService')) 
+    : underline(80);
+  
+  return `
+  <div style="font-family:'SimSun','宋体',serif;width:560px;padding:25px 20px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+    <div style="text-align:center;margin-bottom:16px;">
+      <h2 style="font-size:18px;font-weight:normal;letter-spacing:2px;margin-bottom:4px;">湖北移动爱家工程师延伸服务项目确认验收单</h2>
+    </div>
+    
+    <div style="margin-bottom:12px;">
+      <div style="font-size:14px;margin-bottom:8px;">一、基础信息</div>
+      <table style="width:100%;font-size:13px;line-height:1.8;">
+        <tr>
+          <td style="width:320px;vertical-align:bottom;">
+            客户姓名：${getVal('customerName') ? handwrite(getVal('customerName')) : underline(100)}
+          </td>
+          <td style="vertical-align:bottom;">
+            联系电话：${getVal('customerPhone') ? handwrite(getVal('customerPhone')) : underline(110)}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="vertical-align:bottom;padding-top:4px;">
+            服务地址：${getVal('serviceAddress') ? handwrite(getVal('serviceAddress')) : underline(360)}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="vertical-align:bottom;padding-top:4px;">
+            服务日期：${year ? handwrite(year) : underline(40)}年${month ? handwrite(month) : underline(30)}月${day ? handwrite(day) : underline(30)}日
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding-top:8px;">
+            服务类型：
+            ${checkbox(typeChecks[0].checked)}专属上门 &nbsp;&nbsp;
+            ${checkbox(typeChecks[1].checked)}综合布线 &nbsp;&nbsp;
+            ${checkbox(typeChecks[2].checked)}设备调测 &nbsp;&nbsp;
+            ${checkbox(typeChecks[3].checked)}其他：${otherServiceText}
+          </td>
+        </tr>
+      </table>
+    </div>
+    
+    <div style="margin-bottom:12px;">
+      <div style="font-size:14px;margin-bottom:4px;">二、服务内容及验收标准</div>
+      <div style="font-size:12px;color:#666;margin-bottom:8px;">（根据实际服务勾选对应项目）</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        ${serviceRows}
+      </table>
+    </div>
+    
+    <div style="margin-bottom:12px;">
+      <div style="font-size:14px;margin-bottom:8px;">三、费用合计</div>
+      <div style="padding:8px 0;font-size:14px;">
+        总费用：￥${total ? handwrite(total) : underline(60)}（大写：${totalBig ? handwrite(totalBig) : underline(140)}）
+      </div>
+    </div>
+    
+    <div style="margin-bottom:12px;">
+      <div style="font-size:14px;margin-bottom:8px;">四、客户确认</div>
+      <table style="width:100%;font-size:13px;line-height:1.8;">
+        <tr>
+          <td colspan="2">
+            服务结果验收：
+            ${satisfaction === '满意' ? '☑' : '□'}满意 &nbsp;
+            ${satisfaction === '一般' ? '☑' : '□'}一般 &nbsp;
+            ${satisfaction === '不满意' ? '☑' : '□'}不满意
+            ${satisfaction === '不满意' ? handwrite('（' + unsatisfiedReason + '）') : '（一般或不满意原因：________________________）'}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-top:4px;">
+            客户签字：${getVal('customerSign') ? handwrite(getVal('customerSign')) : underline(100)}
+          </td>
+          <td style="padding-top:4px;">
+            日期：${csYear ? handwrite(csYear) : underline(40)}年${csMonth ? handwrite(csMonth) : underline(25)}月${csDay ? handwrite(csDay) : underline(25)}日
+          </td>
+        </tr>
+      </table>
+    </div>
+    
+    <div>
+      <div style="font-size:14px;margin-bottom:8px;">五、工程师签字</div>
+      <table style="width:100%;font-size:13px;line-height:1.8;">
+        <tr>
+          <td style="width:45%;vertical-align:bottom;">
+            工程师工号：${getVal('engineerId') ? handwrite(getVal('engineerId')) : underline(90)}
+          </td>
+          <td style="vertical-align:bottom;">
+            联系电话：${getVal('engineerPhone') ? handwrite(getVal('engineerPhone')) : underline(110)}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-top:4px;">
+            签字：${getVal('engineerSign') ? handwrite(getVal('engineerSign')) : underline(100)}
+          </td>
+          <td style="padding-top:4px;">
+            日期：${egYear ? handwrite(egYear) : underline(40)}年${egMonth ? handwrite(egMonth) : underline(25)}月${egDay ? handwrite(egDay) : underline(25)}日
+          </td>
+        </tr>
+      </table>
+    </div>
+    
+    <div style="text-align:center;margin-top:16px;padding-top:12px;border-top:1px dashed #ccc;color:#666;font-size:12px;">
+      投诉电话：10086（如服务未达标可致电反馈）
+    </div>
+  </div>`;
+}
+
+// ==================== 重置表单 ====================
+function resetForm() {
+  if (!confirm('确认要重置所有填写内容吗？')) return;
+  
+  document.querySelectorAll('.form-input').forEach(el => el.value = '');
+  document.querySelectorAll('.form-input-qty').forEach(el => el.value = '');
+  document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = false);
+  document.querySelectorAll('.checkbox-label').forEach(el => el.classList.remove('checked'));
+  document.querySelectorAll('.price-display').forEach(el => el.textContent = '￥0');
+  document.querySelectorAll('.satisfaction-btn').forEach(el => el.classList.remove('active-sat'));
+  document.getElementById('unsatisfiedReasonDiv').style.display = 'none';
+  document.getElementById('otherServiceDiv').style.display = 'none';
+  document.getElementById('totalAmount').value = '';
+  document.getElementById('totalBig').value = '';
+  document.getElementById('otherDevicePrice').value = '';
+  
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('serviceDate').value = today;
+  document.getElementById('customerSignDate').value = today;
+  document.getElementById('engineerSignDate').value = today;
+  
+  document.querySelectorAll('.sig-input').forEach(el => el.value = '');
+  
+  showToast('🔄 已重置');
+}
+
+// 点击弹窗外部关闭
+document.getElementById('previewOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closePreview();
+});
+</script>
+</body>
+</html>
